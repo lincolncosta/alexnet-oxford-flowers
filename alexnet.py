@@ -161,14 +161,13 @@ model.summary()
 model.compile(loss='categorical_crossentropy', optimizer='adam',\
  metrics=['accuracy'])
 
-#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
+# (5) Correção nos shapes
 y_tmp = np.zeros((x.shape[0], 17))
 
 for i in range(0, x.shape[0]):
   y_tmp[i][y[i]] = 1
 y = y_tmp
 
-# (5) Train
+# (6) Train
 model.fit(x, y, batch_size=64, epochs=1, verbose=1, \
 validation_split=0.2, shuffle=True)
