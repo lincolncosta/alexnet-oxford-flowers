@@ -169,5 +169,5 @@ for i in range(0, x.shape[0]):
 y = y_tmp
 
 # (6) Train
-model.fit(x, y, batch_size=64, epochs=1, verbose=1, \
+model.fit(x, y, batch_size=64, epochs=100, verbose=1, \
 validation_split=0.2, shuffle=True)
