@@ -5,4 +5,4 @@ The experiment was performed through a laptop with Intel Core i5 2.4GHz CPU, 16G
 
 | Group | Fixed set | Variation set |
 |---------|---|--------|
-| 4 | Activation function: Relu. / Learning ratio: 0.0001. / Epochs: 100. | Optimizer: SGD. / Learning ratio: 0.0005, 0.001, 0.002. |
+| 4 | Activation function: Relu. / Learning ratio: 0.0001. / Epochs: 100. | Optimizer: SGD, Adam. / Learning ratio: 0.0005, 0.001, 0.002. |
