@@ -1,15 +1,16 @@
 import data_utils as du
 import os
-
+import time
 from six.moves import urllib  # added
 import sys  # added
 import tarfile  # added
-
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.layers import BatchNormalization
 import numpy as np
+
+t1 = time.time()
 
 np.random.seed(1000)
 
@@ -166,7 +167,7 @@ model.add(Activation('softmax'))
 
 model.summary()
 
-opt = keras.optimizers.SGD(learning_rate=0.0005)
+opt = keras.optimizers.Adam(learning_rate=0.002)
 
 # (4) Compile
 model.compile(loss='categorical_crossentropy', optimizer=opt,
@@ -182,3 +183,5 @@ y = y_tmp
 # (6) Train
 model.fit(x, y, batch_size=64, epochs=100, verbose=1,
           validation_split=0.2, shuffle=True)
+tempoExec = time.time() - t1
+print("Tempo de execução: {} segundos".format(tempoExec))
