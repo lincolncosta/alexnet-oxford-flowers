@@ -7,7 +7,6 @@ import numpy as np
 from PIL import Image
 import pickle
 import csv
-import warnings
 import tensorflow as tf
 try: #py3
     from urllib.parse import urlparse
