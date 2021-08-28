@@ -88,7 +88,7 @@ def load_data(dirname="17flowers", resize_pics=(224, 224), shuffle=True,
     return X, Y
 
 def create_run_model(execution_name, optimizer):
-
+    t1 = time.time()
     x, y = load_data()
 
     # (3) Create a sequential model
@@ -181,8 +181,11 @@ def create_run_model(execution_name, optimizer):
     # (6) Train
     hist = model.fit(x, y, batch_size=64, epochs=100, verbose=1,
             validation_split=0.2, shuffle=True)
+    tempoExec = time.time() - t1
     with open('{}.json'.format(execution_name), 'w') as f:
         json.dump(hist.history, f)
+    with open('{}.txt'.format(execution_name), 'w') as f:
+        f.write("Tempo de execução: {} segundos".format(tempoExec))
     
 
 executions = [
@@ -195,9 +198,6 @@ executions = [
 ]
 
 for execution in executions:
-    t1 = time.time()
-
     np.random.seed(1000)
     create_run_model(execution['execution_name'], execution['optimizer'])
-    tempoExec = time.time() - t1
-    print("Tempo de execução: {} segundos".format(tempoExec))
+    
