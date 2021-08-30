@@ -206,5 +206,5 @@ for execution in executions:
     plt.plot(entrada['accuracy'],label='accuracy')
     plt.plot(entrada['val_accuracy'],label ='val_accuracy')
     plt.legend()
-    plt.show()
+    plt.save(execution['execution_name'] + '.png')
     
