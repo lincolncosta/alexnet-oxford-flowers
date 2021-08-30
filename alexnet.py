@@ -1,6 +1,6 @@
 import json
 
-import tensorflow
+import matplotlib.pyplot as plt
 import data_utils as du
 import os
 import time
@@ -200,4 +200,11 @@ executions = [
 for execution in executions:
     np.random.seed(1000)
     create_run_model(execution['execution_name'], execution['optimizer'])
+    with open(execution['execution_name'] + '.json') as f:
+        entrada = json.load(f)
+    plt.plot(entrada['loss'],label='loss')
+    plt.plot(entrada['accuracy'],label='accuracy')
+    plt.plot(entrada['val_accuracy'],label ='val_accuracy')
+    plt.legend()
+    plt.show()
     
