@@ -4,13 +4,14 @@ import matplotlib.pyplot as plt
 import data_utils as du
 import os
 import time
-from six.moves import urllib  # added
-import sys  # added
-import tarfile  # added
-from tensorflow import keras
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.layers import BatchNormalization
+from six.moves import urllib
+import sys
+import tarfile
+from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from keras.layers import BatchNormalization
+from tensorflow.keras.optimizers import Adam, SGD
 import numpy as np
 
 
@@ -167,6 +168,18 @@ def create_run_model(execution_name, optimizer):
 
     model.summary()
 
+    hyps = {"OPTIMIZER_NAME": True,
+    "LEARNING_RATE": True,
+    "DECAY": True,
+    "MOMENTUM": True,
+    "NUM_EPOCHS": True,
+    "BATCH_SIZE": True,
+    "NUM_LAYERS": True}
+
+    model.provenance(dataflow_tag="alexnet1",
+                 adaptation=True,
+                 hyps = hyps)
+
     # (4) Compile
     model.compile(loss='categorical_crossentropy', optimizer=optimizer,
                 metrics=['accuracy'])
@@ -177,24 +190,31 @@ def create_run_model(execution_name, optimizer):
     for i in range(0, x.shape[0]):
         y_tmp[i][y[i]] = 1
     y = y_tmp
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, shuffle=True)
 
     # (6) Train
-    hist = model.fit(x, y, batch_size=64, epochs=100, verbose=1,
+    hist = model.fit(x_train, y_train, batch_size=64, epochs=100, verbose=1,
             validation_split=0.2, shuffle=True)
     tempoExec = time.time() - t1
+
+    # (7) Test
+    evaluation = model.evaluate(x_test, y_test, return_dict=True)
+
     with open('{}.json'.format(execution_name), 'w') as f:
         json.dump(hist.history, f)
+    with open('{}-evaluation.json'.format(execution_name), 'w') as f:
+        json.dump(evaluation, f)        
     with open('{}.txt'.format(execution_name), 'w') as f:
         f.write("Tempo de execução: {} segundos".format(tempoExec))
     
 
 executions = [
-    {'execution_name': 'adam-0.001', 'optimizer': keras.optimizers.Adam(learning_rate=0.001)},
-    {'execution_name': 'adam-0.002', 'optimizer': keras.optimizers.Adam(learning_rate=0.002)},
-    {'execution_name': 'adam-0.0005', 'optimizer': keras.optimizers.Adam(learning_rate=0.0005)},
-    {'execution_name': 'sgd-0.001', 'optimizer': keras.optimizers.SGD(learning_rate=0.001)},
-    {'execution_name': 'sgd-0.002', 'optimizer': keras.optimizers.SGD(learning_rate=0.002)},
-    {'execution_name': 'sgd-0.0005', 'optimizer': keras.optimizers.SGD(learning_rate=0.0005)}
+    {'execution_name': 'adam-0.001', 'optimizer': Adam(learning_rate=0.001)},
+    {'execution_name': 'adam-0.002', 'optimizer': Adam(learning_rate=0.002)},
+    {'execution_name': 'adam-0.0005', 'optimizer': Adam(learning_rate=0.0005)},
+    {'execution_name': 'sgd-0.001', 'optimizer': SGD(learning_rate=0.001)},
+    {'execution_name': 'sgd-0.002', 'optimizer': SGD(learning_rate=0.002)},
+    {'execution_name': 'sgd-0.0005', 'optimizer': SGD(learning_rate=0.0005)}
 ]
 
 for execution in executions:
