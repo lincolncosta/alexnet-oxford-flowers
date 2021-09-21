@@ -241,7 +241,8 @@ class Provenance():
 		# set up a connection. arguments below are the defaults
 		connection = pymonetdb.connect(username="monetdb", password="monetdb", hostname="localhost", database="dataflow_analyzer")
 		# create a cursor
-		cursor = connection.cursor()		
+		cursor = connection.cursor()	
+		print(cursor)	
 		query = "SELECT * FROM \"public\".dataflow WHERE tag = %(tag)s"
 		rows = cursor.execute(query, {'tag': dataflow_tag})
 		if (rows>=1):

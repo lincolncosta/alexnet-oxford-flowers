@@ -11,9 +11,8 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.layers import BatchNormalization
-from tensorflow.keras.optimizers import Adam, SGD
+from keras.optimizers import Adam, SGD
 import numpy as np
-
 
 def maybe_download(filename, source_url, work_directory):
     if not os.path.exists(work_directory):
