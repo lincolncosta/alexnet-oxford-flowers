@@ -1,9 +1,5 @@
-import json
-
-import matplotlib.pyplot as plt
 import data_utils as du
 import os
-import time
 from six.moves import urllib
 import sys
 import tarfile
@@ -88,7 +84,6 @@ def load_data(dirname="17flowers", resize_pics=(224, 224), shuffle=True,
     return X, Y
 
 def create_run_model(execution_name, optimizer):
-    t1 = time.time()
     x, y = load_data()
 
     # (3) Create a sequential model
@@ -175,7 +170,7 @@ def create_run_model(execution_name, optimizer):
     "BATCH_SIZE": True,
     "NUM_LAYERS": True}
 
-    model.provenance(dataflow_tag="alexnet1",
+    model.provenance(dataflow_tag=execution_name,
                  adaptation=True,
                  hyps = hyps)
 
@@ -192,38 +187,20 @@ def create_run_model(execution_name, optimizer):
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, shuffle=True)
 
     # (6) Train
-    hist = model.fit(x_train, y_train, batch_size=64, epochs=100, verbose=1,
+    model.fit(x_train, y_train, batch_size=64, epochs=100, verbose=1,
             validation_split=0.2, shuffle=True)
-    tempoExec = time.time() - t1
-
-    # (7) Test
-    evaluation = model.evaluate(x_test, y_test, return_dict=True)
-
-    with open('{}.json'.format(execution_name), 'w') as f:
-        json.dump(hist.history, f)
-    with open('{}-evaluation.json'.format(execution_name), 'w') as f:
-        json.dump(evaluation, f)        
-    with open('{}.txt'.format(execution_name), 'w') as f:
-        f.write("Tempo de execução: {} segundos".format(tempoExec))
     
 
 executions = [
-    {'execution_name': 'adam-0.001', 'optimizer': Adam(learning_rate=0.001)},
-    {'execution_name': 'adam-0.002', 'optimizer': Adam(learning_rate=0.002)},
-    {'execution_name': 'adam-0.0005', 'optimizer': Adam(learning_rate=0.0005)},
-    {'execution_name': 'sgd-0.001', 'optimizer': SGD(learning_rate=0.001)},
-    {'execution_name': 'sgd-0.002', 'optimizer': SGD(learning_rate=0.002)},
-    {'execution_name': 'sgd-0.0005', 'optimizer': SGD(learning_rate=0.0005)}
+    {'execution_name': '100x-adam-0.001', 'optimizer': Adam(learning_rate=0.001)},
+    {'execution_name': '100x-0.002', 'optimizer': Adam(learning_rate=0.002)},
+    {'execution_name': '100x-adam-0.0005', 'optimizer': Adam(learning_rate=0.0005)},
+    {'execution_name': '100x-sgd-0.001', 'optimizer': SGD(learning_rate=0.001)},
+    {'execution_name': '100x-sgd-0.002', 'optimizer': SGD(learning_rate=0.002)},
+    {'execution_name': '100x-sgd-0.0005', 'optimizer': SGD(learning_rate=0.0005)}
 ]
 
 for execution in executions:
     np.random.seed(1000)
     create_run_model(execution['execution_name'], execution['optimizer'])
-    with open(execution['execution_name'] + '.json') as f:
-        entrada = json.load(f)
-    plt.plot(entrada['loss'],label='loss')
-    plt.plot(entrada['accuracy'],label='accuracy')
-    plt.plot(entrada['val_accuracy'],label ='val_accuracy')
-    plt.legend()
-    plt.save(execution['execution_name'] + '.png')
     
