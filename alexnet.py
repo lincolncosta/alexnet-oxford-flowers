@@ -193,7 +193,7 @@ def create_run_model(execution_name, optimizer):
 
 executions = [
     {'execution_name': '100x-adam-0.001', 'optimizer': Adam(learning_rate=0.001)},
-    {'execution_name': '100x-0.002', 'optimizer': Adam(learning_rate=0.002)},
+    {'execution_name': '100x-adam-0.002', 'optimizer': Adam(learning_rate=0.002)},
     {'execution_name': '100x-adam-0.0005', 'optimizer': Adam(learning_rate=0.0005)},
     {'execution_name': '100x-sgd-0.001', 'optimizer': SGD(learning_rate=0.001)},
     {'execution_name': '100x-sgd-0.002', 'optimizer': SGD(learning_rate=0.002)},
